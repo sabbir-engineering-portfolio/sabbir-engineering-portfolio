@@ -1,16 +1,34 @@
-## Hi there 👋
+# Sabbir Engineering Portfolio
 
-<!--
-**sabbir-engineering-portfolio/sabbir-engineering-portfolio** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+Premium responsive portfolio website for Sabbir Ahmmed Shehab.
 
-Here are some ideas to get you started:
+## Local development
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+```bash
+npm install
+npm run dev
+```
+
+## Production build
+
+```bash
+npm run build
+```
+
+The build output will be in `dist/`.
+
+## Cloudflare Pages settings
+
+- Framework preset: Vite
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Node version: 20 or later
+
+## Updating content
+
+Most website content is stored in `src/main.jsx`:
+- `products` array for engineering products
+- `training` array for training locations
+- `skills` object for technical capabilities
+
+Images and the CV are stored under `public/`.
