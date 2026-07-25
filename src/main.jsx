@@ -65,12 +65,12 @@ function App(){
   return <>
     <header className="nav-wrap">
       <nav className="nav container">
-        <a href="#home" className="brand"><span>SS</span><div><b>Sabbir Shehab</b><small>Executive Engineer</small></div></a>
+        <a href="#home" className="brand"><span>SS</span><div><b>Sabbir Shehab</b><small>Assistant Engineer</small></div></a>
         <div className="desktop-nav">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()}>{n}</a>)}</div>
-        <a className="nav-cta desktop-nav" href="/cv/Sabbir_Ahmmed_Shehab_CV.docx" download><Download size={16}/> Download CV</a>
+        <a className="nav-cta desktop-nav" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={16}/> Download CV</a>
         <button className="menu-btn" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X/>:<Menu/>}</button>
       </nav>
-      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="/cv/Sabbir_Ahmmed_Shehab_CV.docx" download>Download CV</a></div>}
+      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
     </header>
 
     <main id="home">
@@ -78,12 +78,12 @@ function App(){
         <div className="circuit-bg" aria-hidden="true"><span/><span/><span/><span/><span/></div>
         <div className="container hero-grid">
           <div className="hero-copy reveal visible">
-            <div className="eyebrow"><span/> Executive Engineer · Dhaka, Bangladesh</div>
+            <div className="eyebrow"><span/> Assistant Engineer · Dhaka, Bangladesh</div>
             <h1>I develop engineering products from <em>concept</em> to classroom and industry use.</h1>
             <p>Product development, industrial automation, technical documentation, manufacturing support and engineering training—combined across the full product lifecycle.</p>
             <div className="hero-actions">
               <a className="btn primary" href="#products">Explore Engineering Work <ArrowRight size={18}/></a>
-              <a className="btn secondary" href="/cv/Sabbir_Ahmmed_Shehab_CV.docx" download><Download size={18}/> Download CV</a>
+              <a className="btn secondary" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={18}/> Download CV</a>
             </div>
             <div className="hero-pills"><span>Siemens LOGO!</span><span>Delta PLC</span><span>Embedded Systems</span><span>Technical Manuals</span></div>
           </div>
@@ -115,9 +115,9 @@ function App(){
       <section id="experience" className="section soft">
         <div className="container"><div className="section-head reveal"><div><span className="section-tag">Experience</span><h2>Career journey</h2></div><p>Progressive technical responsibility across product development, service engineering and practical training.</p></div>
           <div className="timeline">
-            <article className="timeline-item reveal"><div className="time">Current</div><div><h3>Executive Engineer</h3><h4>Fabotronix Limited</h4><p>Engineering product development, PLC and embedded systems, trainer design, documentation, production support, testing, technical training and supplier communication.</p><ul><li>Owns product concepts through assembly, testing, documentation and training.</li><li>Maintains QR-enabled product documentation.</li><li>Supports international technical sourcing for robotics and tender requirements.</li></ul></div></article>
+            <article className="timeline-item reveal"><div className="time">Current</div><div><h3>Assistant Engineer</h3><h4>Fabotronix Limited</h4><p>Engineering product development, PLC and embedded systems, trainer design, documentation, production support, testing, technical training and supplier communication.</p><ul><li>Owns product concepts through assembly, testing, documentation and training.</li><li>Maintains QR-enabled product documentation.</li><li>Supports international technical sourcing for robotics and tender requirements.</li></ul></div></article>
             <article className="timeline-item reveal"><div className="time">2023 · 6 months</div><div><h3>Service Engineer</h3><h4>Gazi International</h4><p>Hands-on servicing exposure across peripheral, centrifugal, submersible and drainage pumps, electric motors and home appliances, excluding motor rewinding.</p></div></article>
-            <article className="timeline-item reveal"><div className="time">Feb 2022</div><div><h3>Assistant Engineer & Product Designer</h3><h4>Fabotronix Limited</h4><p>Started systematic trainer-board development, design improvement, documentation and technical training responsibilities.</p></div></article>
+            <article className="timeline-item reveal"><div className="time">Feb 2022</div><div><h3>Engineering Product Development</h3><h4>Fabotronix Limited</h4><p>Joined Fabotronix and began hands-on work in trainer-board development, design improvement, technical documentation, production support and user training.</p></div></article>
           </div>
         </div>
       </section>
@@ -170,12 +170,12 @@ function App(){
       <section id="contact" className="contact-section">
         <div className="container contact-grid">
           <div className="reveal"><span className="section-tag light-tag">Contact</span><h2>Let’s discuss engineering, product development or technical collaboration.</h2><p>Based in Dhaka, Bangladesh. Open to relevant engineering and multinational opportunities.</p></div>
-          <div className="contact-card reveal"><a href="mailto:sabbirahmmedshehab@gmail.com"><Mail/> <span><small>Email</small><b>sabbirahmmedshehab@gmail.com</b></span></a><a href="tel:+8801635166768"><Phone/> <span><small>Phone</small><b>+880 1635-166768</b></span></a><a href="/cv/Sabbir_Ahmmed_Shehab_CV.docx" download><Download/> <span><small>Resume</small><b>Download CV</b></span></a></div>
+          <div className="contact-card reveal"><a href="mailto:sabbirahmmedshehab@gmail.com"><Mail/> <span><small>Email</small><b>sabbirahmmedshehab@gmail.com</b></span></a><a href="tel:+8801635166768"><Phone/> <span><small>Phone</small><b>+880 1635-166768</b></span></a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download/> <span><small>Resume</small><b>Download CV</b></span></a></div>
         </div>
       </section>
     </main>
 
-    <footer><div className="container"><span>© 2026 Sabbir Ahmmed Shehab</span><span>Executive Engineer · Product Development · Industrial Automation</span></div></footer>
+    <footer><div className="container"><span>© 2026 Sabbir Ahmmed Shehab</span><span>Assistant Engineer · Product Development · Industrial Automation</span></div></footer>
   </>
 }
 
