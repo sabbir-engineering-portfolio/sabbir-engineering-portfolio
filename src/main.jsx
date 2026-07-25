@@ -1,67 +1,79 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import {
-  ArrowRight, BriefcaseBusiness, CheckCircle2, ChevronDown, CircuitBoard,
-  ClipboardCheck, Cpu, Download, ExternalLink, Factory, GraduationCap,
-  Mail, MapPin, Menu, Network, Phone, ShieldCheck, Wrench, X, Zap
+  ArrowRight, Award, BookOpen, BriefcaseBusiness, CheckCircle2, ChevronRight,
+  CircuitBoard, ClipboardCheck, Cpu, Download, ExternalLink, Factory,
+  FileText, GraduationCap, Layers3, Mail, MapPin, Menu, Network, Phone,
+  Search, Settings2, ShieldCheck, Sparkles, Wrench, X, Zap
 } from 'lucide-react';
 import './styles.css';
 
 const products = [
-  { year:'2022', category:'Electrical', title:'DC Circuit & Network Trainer', desc:'Practical trainer for DC circuit analysis, component behavior and network experiments.' },
-  { year:'2022', category:'Electrical', title:'AC Circuit & Network Trainer', desc:'Hands-on platform for AC circuit, phase and network investigations.' },
-  { year:'2022', category:'Measurement', title:'Wheatstone Bridge Trainer', desc:'Trainer focused on bridge measurement principles and resistance experiments.' },
-  { year:'2022', category:'Sensors', title:'Basic & Advanced Sensor Trainers', desc:'Progressive sensor-interfacing systems for practical learning and testing.' },
-  { year:'2022', category:'Electronics', title:'Basic & Industrial Electronics Trainers', desc:'Training systems covering core electronic devices, testing and applications.' },
-  { year:'2022', category:'Electrical', title:'Transformer Trainer', desc:'Practical transformer studies with measurement and operating exercises.' },
-  { year:'2022', category:'Electronics', title:'Filter Circuit Trainer Series', desc:'High-pass, low-pass, band-pass and band-stop filter learning systems.' },
-  { year:'2022', category:'Measurement', title:'RLC Decade Boxes', desc:'Resistance, inductance and capacitance decade boxes for laboratory experimentation.' },
-  { year:'2023', category:'Embedded', title:'Arduino Development Board', desc:'Custom learning board for microcontroller programming and peripheral interfacing.' },
-  { year:'2023', category:'IoT', title:'IoT Trainer', desc:'A practical training platform for connected-device concepts and sensor integration.' },
-  { year:'2023', category:'Automation', title:'PLC Trainer Board', desc:'PLC hardware and programming platform supporting practical automation exercises.' },
-  { year:'2023', category:'Protection', title:'Switchgear & Protection Trainer', desc:'Training system for switchgear, protection logic and electrical safety concepts.' },
-  { year:'2023', category:'Renewable', title:'Solar Trainer Systems', desc:'Solar trainer board and kit for renewable-energy experiments and system understanding.' },
-  { year:'2023', category:'Electrical', title:'Electrical Circuit & Network Total Lab', desc:'Integrated laboratory solution covering broad electrical network experiments.' },
-  { year:'2024', category:'Digital', title:'Digital Logic & Digital Circuit Trainers', desc:'Hands-on trainers for logic gates, combinational and sequential digital circuits.' },
-  { year:'2024', category:'Electrical', title:'Single & Three Phase Transformer Trainers', desc:'Dedicated platforms for transformer experiments across single- and three-phase systems.' },
-  { year:'2024', category:'Networking', title:'LAN Trainer', desc:'Networking trainer for practical LAN configuration, hardware and troubleshooting.' },
-  { year:'2024', category:'Service', title:'LED TV, PC Hardware & Laptop Trainers', desc:'Service-oriented training systems for electronic and computer hardware learning.' },
-  { year:'2025–26', category:'Communication', title:'EPABX Trainer Board', desc:'Communication-system trainer for EPABX configuration and practical exercises.' },
-  { year:'2025–26', category:'Robotics', title:'Robotics Trainer Board', desc:'Training platform for robotics fundamentals, control and practical integration.' }
+  { year:'2022', category:'Electrical', title:'DC Circuit & Network Trainer', desc:'A structured practical platform for DC laws, component behaviour and network-analysis experiments.', role:'Product development · testing · documentation', tech:['Circuit design','Measurement','Lab training'] },
+  { year:'2022', category:'Measurement', title:'Wheatstone Bridge Trainer', desc:'Experiment-oriented trainer for resistance measurement, bridge balancing and instrumentation principles.', role:'Development · validation · user manual', tech:['Bridge circuit','Calibration','Documentation'] },
+  { year:'2022', category:'Sensors', title:'Basic & Advanced Sensor Trainers', desc:'Progressive sensor-learning systems for transducer behaviour, interfacing and practical measurement.', role:'Hardware development · testing', tech:['Sensors','Signal conditioning','Training'] },
+  { year:'2022', category:'Electronics', title:'Industrial Electronics Trainer', desc:'Practical electronics system covering devices, testing, troubleshooting and industrial applications.', role:'Design support · assembly · training', tech:['Electronics','PCB','Troubleshooting'] },
+  { year:'2023', category:'Embedded', title:'Arduino Development Board', desc:'Custom microcontroller learning platform for programming, peripheral interfacing and project development.', role:'PCB · firmware support · documentation', tech:['Arduino','Embedded C','PCB'] },
+  { year:'2023', category:'IoT', title:'IoT Trainer', desc:'Connected-device training platform integrating sensors, wireless communication and cloud-oriented concepts.', role:'System integration · documentation', tech:['ESP32','Sensors','IoT'] },
+  { year:'2023', category:'Automation', title:'PLC Trainer Board', desc:'Industrial automation learning platform for PLC programming, field wiring and hardware troubleshooting.', role:'Panel integration · PLC setup · training', tech:['Delta PLC','WPLSoft','I/O wiring'] },
+  { year:'2023', category:'Protection', title:'Switchgear & Protection Trainer', desc:'Hands-on platform for protection devices, switching logic, safety and fault-analysis exercises.', role:'Hardware development · testing', tech:['Protection','Switchgear','Safety'] },
+  { year:'2023', category:'Renewable', title:'Solar Trainer System', desc:'Renewable-energy trainer for solar fundamentals, measurements, charging and system-level understanding.', role:'Product support · experiment design', tech:['Solar PV','Measurement','Power'] },
+  { year:'2024', category:'Digital', title:'Digital Logic Trainer Series', desc:'Experiment-oriented trainers for logic gates, combinational circuits and sequential systems.', role:'Design · validation · manuals', tech:['Digital logic','IC testing','Experiments'] },
+  { year:'2024', category:'Networking', title:'LAN Trainer', desc:'Practical networking trainer for cabling, device configuration, topology and troubleshooting.', role:'Configuration · training · support', tech:['LAN','Networking','Diagnostics'] },
+  { year:'2025–26', category:'Robotics', title:'Robotics Trainer Board', desc:'Modular learning platform for control, sensing, actuators and robotics-system integration.', role:'Development support · sourcing', tech:['Robotics','Sensors','Motor control'] }
+];
+
+const caseStudies = [
+  { no:'01', title:'PLC Training Platform', type:'Industrial Automation', text:'Developed and supported a practical PLC training environment combining controller programming, I/O wiring, hardware connection and troubleshooting exercises.', impact:'Made automation concepts demonstrable through a repeatable one-student-one-setup workflow.', tags:['PLC','WPLSoft','Hardware I/O','Training'] },
+  { no:'02', title:'QR-Enabled Technical Documentation', type:'Documentation System', text:'Introduced QR-linked manuals and experiment resources directly on trainer systems, reducing reliance on printed copies and improving access to updated instructions.', impact:'Connected physical equipment with controlled digital documentation and faster user support.', tags:['QR workflow','Manuals','Version control','User experience'] },
+  { no:'03', title:'Trainer Product Lifecycle', type:'Product Engineering', text:'Worked across concept review, component sourcing, PCB and assembly support, testing, documentation, delivery and user training for educational engineering products.', impact:'Built practical understanding of how engineering products move from idea to repeatable production.', tags:['Product development','Manufacturing','QA','Delivery'] }
 ];
 
 const training = [
-  ['Chapai Nawabganj Polytechnic Institute','Trainer-board orientation and technical training'],
-  ['Dinajpur Polytechnic Institute','Trainer-board operation and practical knowledge transfer'],
-  ['Rangpur Polytechnic Institute','Technical training for engineering laboratory systems'],
-  ['Shariatpur Polytechnic Institute','Multiple trainer-board training sessions'],
-  ['Sweden Polytechnic Institute','Trainer-board technical training'],
-  ['PFI / Navy Base, Kaptai','Technical training and product familiarization'],
-  ['Sirajganj Polytechnic Institute','LOGO! Soft Comfort, WPLSoft, PLC hardware connection, legacy trainer repair and pneumatic conveyor system'],
-  ['Jashore Polytechnic Institute','LAN trainer training'],
-  ['Satkhira Polytechnic Institute','Logic-gate trainer training']
+  ['Chapai Nawabganj Polytechnic Institute','Trainer-board orientation and technical knowledge transfer'],
+  ['Dinajpur Polytechnic Institute','Trainer operation, experiments and practical laboratory use'],
+  ['Rangpur Polytechnic Institute','Engineering laboratory systems and troubleshooting'],
+  ['Shariatpur Polytechnic Institute','Multiple product-specific technical sessions'],
+  ['Sweden Polytechnic Institute','Trainer-board operation and experiment guidance'],
+  ['PFI / Navy Base, Kaptai','Technical familiarisation and product support'],
+  ['Sirajganj Polytechnic Institute','LOGO! Soft Comfort, WPLSoft, PLC wiring and pneumatic conveyor support'],
+  ['Jashore Polytechnic Institute','LAN trainer configuration and practical training'],
+  ['Satkhira Polytechnic Institute','Digital logic and logic-gate trainer training']
 ];
 
-const skills = {
-  'PLC & Automation':['Siemens LOGO!','Delta PLC','WPLSoft','PLC/HMI hardware setup','Communication setup','Troubleshooting'],
-  'Embedded Systems':['Arduino','STM32','ESP32','ESP8266','PIC','Sensor interfacing'],
-  'Electronics & PCB':['Proteus','LTspice','EasyEDA','PCB design','Electronic troubleshooting'],
-  'Manufacturing':['Trainer assembly','PCB assembly','Industrial panels','Power supplies','Testing & inspection','Quality checks'],
-  'Documentation':['User manuals','Experiment manuals','Wiring diagrams','Installation guides','Troubleshooting guides','QR documentation'],
-  'Design & Productivity':['Microsoft Office','Adobe Photoshop','Illustrator','Premiere Pro','CapCut']
-};
+const skills = [
+  {name:'PLC & Automation', icon:Settings2, items:['Siemens LOGO!','Delta PLC','WPLSoft','PLC hardware wiring','HMI integration','Fault diagnosis']},
+  {name:'Embedded Systems', icon:Cpu, items:['Arduino','STM32','ESP32','ESP8266','PIC','Sensor interfacing']},
+  {name:'Electronics & PCB', icon:CircuitBoard, items:['Proteus','LTspice','EasyEDA','PCB design','Testing','Troubleshooting']},
+  {name:'Manufacturing', icon:Factory, items:['PCB assembly','Trainer assembly','Industrial panels','Power supplies','Inspection','Production support']},
+  {name:'Technical Documentation', icon:FileText, items:['User manuals','Experiment guides','Wiring diagrams','Installation guides','QR documentation','Troubleshooting']},
+  {name:'Visual & Office Tools', icon:Layers3, items:['Microsoft Office','Photoshop','Illustrator','Premiere Pro','CapCut','Presentation design']}
+];
+
+const lifecycle = [
+  ['01','Research',Search,'Define learning objectives and technical requirements.'],
+  ['02','Design',CircuitBoard,'Develop circuits, layouts, interfaces and structure.'],
+  ['03','Source',Network,'Select practical components and coordinate procurement.'],
+  ['04','Build',Factory,'Support PCB, wiring, assembly and production execution.'],
+  ['05','Validate',ShieldCheck,'Test functions, experiments, safety and usability.'],
+  ['06','Document',ClipboardCheck,'Create manuals, diagrams and QR-linked resources.'],
+  ['07','Train',GraduationCap,'Transfer product knowledge to teachers and users.']
+];
 
 function App(){
   const [menu,setMenu]=useState(false);
   const [filter,setFilter]=useState('All');
+  const [selected,setSelected]=useState(null);
   const categories=['All',...new Set(products.map(p=>p.category))];
   const visible=useMemo(()=>filter==='All'?products:products.filter(p=>p.category===filter),[filter]);
+
   useEffect(()=>{
     const obs=new IntersectionObserver(entries=>entries.forEach(e=>e.isIntersecting&&e.target.classList.add('visible')),{threshold:.12});
     document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
     return()=>obs.disconnect();
   },[]);
-  const nav=['About','Experience','Products','Manuals','Training','Skills','Contact'];
+
+  const nav=['About','Experience','Work','Manuals','Training','Skills','Contact'];
   return <>
     <header className="nav-wrap">
       <nav className="nav container">
@@ -75,108 +87,101 @@ function App(){
 
     <main id="home">
       <section className="hero">
-        <div className="circuit-bg" aria-hidden="true"><span/><span/><span/><span/><span/></div>
+        <div className="hero-mesh" aria-hidden="true"/><div className="signal-line" aria-hidden="true"/>
         <div className="container hero-grid">
           <div className="hero-copy reveal visible">
-            <div className="eyebrow"><span/> Assistant Engineer · Dhaka, Bangladesh</div>
-            <h1>I develop engineering products from <em>concept</em> to classroom and industry use.</h1>
-            <p>Product development, industrial automation, technical documentation, manufacturing support and engineering training—combined across the full product lifecycle.</p>
+            <div className="eyebrow"><span/> Assistant Engineer · Product Development</div>
+            <h1>I turn engineering concepts into <em>working products, manuals and practical training.</em></h1>
+            <p>Electronics, embedded systems, PLC automation and educational trainer development—supported from design and manufacturing through documentation and knowledge transfer.</p>
             <div className="hero-actions">
-              <a className="btn primary" href="#products">Explore Engineering Work <ArrowRight size={18}/></a>
+              <a className="btn primary" href="#work">View Selected Work <ArrowRight size={18}/></a>
               <a className="btn secondary" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={18}/> Download CV</a>
             </div>
-            <div className="hero-pills"><span>Siemens LOGO!</span><span>Delta PLC</span><span>Embedded Systems</span><span>Technical Manuals</span></div>
+            <div className="micro-proof"><span><CheckCircle2/> Product Development</span><span><CheckCircle2/> PLC & Embedded</span><span><CheckCircle2/> Technical Manuals</span></div>
           </div>
-          <div className="portrait-card reveal visible">
-            <div className="portrait-frame"><img src="/assets/profile.png" alt="Sabbir Ahmmed Shehab"/></div>
-            <div className="portrait-meta"><b>Sabbir Ahmmed Shehab</b><span>Product Development · Automation · Documentation</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section className="proof-strip">
-        <div className="container proof-grid">
-          <div><b>9 PLC brands</b><span>covered through technical documentation</span></div>
-          <div><b>2022–2026</b><span>multi-year product-development record</span></div>
-          <div><b>Nationwide</b><span>polytechnic teacher-training exposure</span></div>
-          <div><b>Full lifecycle</b><span>design, build, test, document and train</span></div>
-        </div>
-      </section>
-
-      <section id="about" className="section container split">
-        <div className="section-tag reveal">About</div>
-        <div className="reveal"><h2>Engineering depth built through practical ownership.</h2><p className="lead">My work sits at the intersection of product engineering, technical education and industrial execution.</p></div>
-        <div className="about-copy reveal"><p>Since 2022, I have designed and improved engineering trainer systems across electrical, electronics, automation, embedded systems, networking, renewable energy and robotics. I also established QR-enabled documentation practices and began creating experiment-oriented user manuals before generative AI became publicly available.</p><p>I later adopted AI-assisted workflows to accelerate documentation while retaining engineering review, accuracy and usability. Because I design the systems, I also train teachers and users on operation, programming, hardware connection, troubleshooting and maintenance.</p></div>
-        <div className="principles reveal">
-          {[['Concept to Product',CircuitBoard],['Document for Use',ClipboardCheck],['Build & Validate',Factory],['Train & Support',GraduationCap]].map(([t,I])=><div key={t}><I/><b>{t}</b><span>Practical ownership across every stage.</span></div>)}
-        </div>
-      </section>
-
-      <section id="experience" className="section soft">
-        <div className="container"><div className="section-head reveal"><div><span className="section-tag">Experience</span><h2>Career journey</h2></div><p>Progressive technical responsibility across product development, service engineering and practical training.</p></div>
-          <div className="timeline">
-            <article className="timeline-item reveal"><div className="time">Current</div><div><h3>Assistant Engineer</h3><h4>Fabotronix Limited</h4><p>Engineering product development, PLC and embedded systems, trainer design, documentation, production support, testing, technical training and supplier communication.</p><ul><li>Owns product concepts through assembly, testing, documentation and training.</li><li>Maintains QR-enabled product documentation.</li><li>Supports international technical sourcing for robotics and tender requirements.</li></ul></div></article>
-            <article className="timeline-item reveal"><div className="time">2023 · 6 months</div><div><h3>Service Engineer</h3><h4>Gazi International</h4><p>Hands-on servicing exposure across peripheral, centrifugal, submersible and drainage pumps, electric motors and home appliances, excluding motor rewinding.</p></div></article>
-            <article className="timeline-item reveal"><div className="time">Feb 2022</div><div><h3>Engineering Product Development</h3><h4>Fabotronix Limited</h4><p>Joined Fabotronix and began hands-on work in trainer-board development, design improvement, technical documentation, production support and user training.</p></div></article>
+          <div className="portrait-stage reveal visible">
+            <div className="portrait-glow"/><div className="portrait-frame"><img src="/assets/profile.png" alt="Sabbir Ahmmed Shehab"/></div>
+            <div className="floating-chip chip-one"><CircuitBoard/><span><b>Build</b> Practical trainer systems</span></div>
+            <div className="floating-chip chip-two"><FileText/><span><b>Document</b> Experiment-oriented manuals</span></div>
+            <div className="portrait-meta"><span>Available for engineering opportunities</span><b>Dhaka, Bangladesh</b></div>
           </div>
         </div>
       </section>
 
-      <section id="products" className="section container">
-        <div className="section-head reveal"><div><span className="section-tag">Product Development</span><h2>Selected engineering systems</h2></div><p>A representative portfolio organized by year and technical domain.</p></div>
-        <div className="filters reveal">{categories.map(c=><button className={filter===c?'active':''} onClick={()=>setFilter(c)} key={c}>{c}</button>)}</div>
-        <div className="product-grid">{visible.map((p,i)=><article className="product-card reveal" key={p.title}><div className="card-top"><span>{p.year}</span><small>{p.category}</small></div><h3>{p.title}</h3><p>{p.desc}</p><div className="card-foot"><span>Engineering product</span><ArrowRight size={17}/></div></article>)}</div>
+      <section className="metric-band">
+        <div className="container metric-grid">
+          <div><strong>2022–2026</strong><span>Product-development experience</span></div>
+          <div><strong>12+</strong><span>Trainer-system categories</span></div>
+          <div><strong>9</strong><span>Technical training locations</span></div>
+          <div><strong>360°</strong><span>Design-to-training exposure</span></div>
+        </div>
+      </section>
+
+      <section id="about" className="section container about-layout">
+        <div className="section-index reveal">01 / Profile</div>
+        <div className="reveal"><div className="section-kicker">Engineering profile</div><h2>Practical engineering ownership—not just task execution.</h2></div>
+        <div className="about-story reveal"><p className="lead">I work where product development, manufacturing and technical education meet.</p><p>Since 2022, I have supported the development of educational and industrial trainer systems across electronics, electrical engineering, embedded systems, automation, networking and robotics. My contribution extends beyond hardware: I create experiment-oriented manuals, wiring guidance and QR-linked resources, then help users operate and troubleshoot the final systems.</p><p>This gives me an end-to-end perspective—understanding not only how a circuit or controller works, but how a complete product must be designed, assembled, validated, documented and delivered for reliable use.</p></div>
+        <div className="capability-stack reveal">
+          {[['Product engineering','Requirement to validated hardware'],['Technical documentation','Clear manuals and experiment workflows'],['Manufacturing support','Assembly, testing and quality checks'],['Knowledge transfer','Training, demonstrations and troubleshooting']].map(([a,b],i)=><div key={a}><span>0{i+1}</span><section><b>{a}</b><small>{b}</small></section></div>)}
+        </div>
+      </section>
+
+      <section id="experience" className="section muted-section">
+        <div className="container">
+          <div className="section-head reveal"><div><div className="section-kicker">Career journey</div><h2>Experience shaped by hands-on responsibility.</h2></div><p>My career progression reflects increasing ownership across product development, service, documentation and technical training.</p></div>
+          <div className="career-grid">
+            <article className="career-card featured reveal"><div className="career-year">2022—Present</div><div className="career-icon"><Factory/></div><h3>Assistant Engineer</h3><h4>Fabotronix Limited · Dhaka</h4><p>Supporting engineering trainer and automation product development from circuit and system review to production, testing, manuals and user training.</p><ul><li>Develop and improve educational engineering trainers.</li><li>Support PLC, embedded, PCB and panel-based systems.</li><li>Create technical manuals, experiment guides and QR documentation.</li><li>Conduct product training for teachers and institutional users.</li><li>Coordinate sourcing and technical evaluation of components and automation products.</li></ul></article>
+            <article className="career-card reveal"><div className="career-year">2023 · 6 months</div><div className="career-icon"><Wrench/></div><h3>Service Engineer</h3><h4>Gazi International</h4><p>Diagnosed and serviced pumps, motors and home appliances, strengthening systematic fault-finding and customer-facing technical support.</p><div className="career-tags"><span>Diagnostics</span><span>Repair</span><span>Service support</span></div></article>
+            <article className="career-card reveal"><div className="career-year">Ongoing</div><div className="career-icon"><GraduationCap/></div><h3>B.Sc. in EEE</h3><h4>Academic development</h4><p>Continuing undergraduate study while applying diploma-level electronics knowledge in real product, manufacturing and automation environments.</p><div className="career-tags"><span>EEE</span><span>Ongoing</span><span>Applied learning</span></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="work" className="section container">
+        <div className="section-head reveal"><div><div className="section-kicker">Selected work</div><h2>Engineering case studies.</h2></div><p>Examples of the systems and workflows that best represent how I approach engineering work.</p></div>
+        <div className="case-grid">
+          {caseStudies.map(c=><article className="case-card reveal" key={c.no}><div className="case-top"><span>{c.no}</span><small>{c.type}</small></div><h3>{c.title}</h3><p>{c.text}</p><div className="impact"><Sparkles/><span>{c.impact}</span></div><div className="case-tags">{c.tags.map(t=><span key={t}>{t}</span>)}</div></article>)}
+        </div>
+
+        <div className="portfolio-head reveal"><div><h3>Product portfolio</h3><p>Filter the systems below and open any item for role and technology details.</p></div><div className="filters">{categories.map(c=><button key={c} className={filter===c?'active':''} onClick={()=>setFilter(c)}>{c}</button>)}</div></div>
+        <div className="product-grid">
+          {visible.map((p,i)=><button className="product-card reveal" key={p.title} onClick={()=>setSelected(p)}><div className="card-number">{String(i+1).padStart(2,'0')}</div><div className="card-top"><span>{p.year}</span><small>{p.category}</small></div><h3>{p.title}</h3><p>{p.desc}</p><div className="card-foot"><span>View details</span><ArrowRight size={17}/></div></button>)}
+        </div>
       </section>
 
       <section id="manuals" className="section manuals-section">
-        <div className="container manuals-grid">
-          <div className="reveal"><span className="section-tag">Technical Documentation</span><h2>Documentation designed as part of the product—not an afterthought.</h2><p className="lead">User manuals, experiment procedures, wiring diagrams, installation guidance, troubleshooting and QR-enabled access.</p><div className="manual-points"><div><CheckCircle2/>Started manual development before public generative AI tools.</div><div><CheckCircle2/>Adopted AI later to improve speed while preserving engineering review.</div><div><CheckCircle2/>Documentation experience spans multiple PLC platforms and trainer categories.</div></div></div>
-          <div className="manual-visual reveal"><img src="/assets/manuals-folder.png" alt="Technical user manual portfolio folders"/><div className="floating-note"><ClipboardCheck/><b>Living documentation system</b><span>Continually updated with products and revisions.</span></div></div>
+        <div className="container manuals-layout">
+          <div className="manual-copy reveal"><div className="section-kicker">Technical documentation</div><h2>Documentation engineered for actual use.</h2><p className="lead">A trainer is only complete when users can understand, connect, experiment and troubleshoot it correctly.</p><p>I develop user manuals and experiment guides covering safety, system overview, panel connection, circuit diagrams, operating procedures, observations and troubleshooting. I also implemented QR-based access to digital documentation on physical trainer systems.</p><div className="manual-points">{[['Experiment-oriented structure',BookOpen],['Wiring and circuit guidance',CircuitBoard],['QR-linked digital access',Network],['Troubleshooting support',Wrench]].map(([t,I])=><div key={t}><I/><span>{t}</span></div>)}</div></div>
+          <div className="manual-collage reveal"><img className="manual-main" src="/assets/manuals-folder.png" alt="Technical manual library"/><img className="manual-small one" src="/assets/10438.jpg" alt="Manual records"/><img className="manual-small two" src="/assets/10444.jpg" alt="Documentation records"/><div className="doc-stat"><strong>Structured library</strong><span>Manuals organised by trainer and technology</span></div></div>
         </div>
-      </section>
-
-      <section id="training" className="section container">
-        <div className="section-head reveal"><div><span className="section-tag">Technical Training</span><h2>Knowledge transfer across Bangladesh</h2></div><p>Teacher and user training based on direct product-design ownership.</p></div>
-        <div className="training-grid">{training.map(([place,topic])=><article className="training-card reveal" key={place}><MapPin/><div><h3>{place}</h3><p>{topic}</p></div></article>)}</div>
       </section>
 
       <section className="section dark-section">
-        <div className="container lifecycle">
-          <div className="reveal"><span className="section-tag light-tag">Engineering Lifecycle</span><h2>One engineer. Multiple stages. One continuous feedback loop.</h2></div>
-          <div className="lifecycle-row reveal">{[['01','Define',BriefcaseBusiness],['02','Design',CircuitBoard],['03','Build',Wrench],['04','Test',ShieldCheck],['05','Document',ClipboardCheck],['06','Train',GraduationCap]].map(([n,t,I])=><div key={t}><span>{n}</span><I/><b>{t}</b></div>)}</div>
-        </div>
+        <div className="container"><div className="section-head reveal"><div><div className="section-kicker light">Product lifecycle</div><h2>From requirement to reliable use.</h2></div><p>My value comes from understanding the complete chain—not only one isolated engineering stage.</p></div><div className="lifecycle-grid">{lifecycle.map(([n,t,I,d])=><div className="life-card reveal" key={t}><span>{n}</span><I/><h3>{t}</h3><p>{d}</p></div>)}</div></div>
       </section>
 
-      <section id="skills" className="section container">
-        <div className="section-head reveal"><div><span className="section-tag">Technical Skills</span><h2>Capability matrix</h2></div><p>Grouped by engineering function rather than generic percentage bars.</p></div>
-        <div className="skills-grid">{Object.entries(skills).map(([k,v])=><article className="skill-card reveal" key={k}><h3>{k}</h3><div>{v.map(x=><span key={x}>{x}</span>)}</div></article>)}</div>
+      <section id="training" className="section container">
+        <div className="section-head reveal"><div><div className="section-kicker">Knowledge transfer</div><h2>Technical training across Bangladesh.</h2></div><p>Product knowledge transferred through trainer operation, software, wiring, troubleshooting and experiment demonstrations.</p></div>
+        <div className="training-layout"><div className="map-panel reveal"><div className="map-orbit"><div className="map-center">BD<span>Training footprint</span></div>{[1,2,3,4,5,6].map(i=><i key={i} className={'dot dot-'+i}/>)}</div><div className="map-caption"><MapPin/><span>Polytechnic and institutional training across multiple districts</span></div></div><div className="training-list">{training.map(([a,b],i)=><article className="training-card reveal" key={a}><span>{String(i+1).padStart(2,'0')}</span><div><h3>{a}</h3><p>{b}</p></div><ChevronRight/></article>)}</div></div>
       </section>
 
-      <section className="section soft projects">
-        <div className="container"><div className="section-head reveal"><div><span className="section-tag">Practical Projects</span><h2>Selected hands-on work</h2></div></div>
-          <div className="project-list reveal">{['IR-based light and fan control system','Conveyor belt using DC series motors, servo motors and gearbox','Arduino four-way traffic signal controller','Six-axis robotic arm programming and control','PLC automation trainer','Relay protection trainer','Arduino path-finding robot'].map((p,i)=><div key={p}><span>{String(i+1).padStart(2,'0')}</span><b>{p}</b><ExternalLink size={17}/></div>)}</div>
-        </div>
+      <section id="skills" className="section muted-section">
+        <div className="container"><div className="section-head reveal"><div><div className="section-kicker">Technical capability</div><h2>Tools supported by practical application.</h2></div><p>Skills are grouped by the engineering outcomes they help deliver.</p></div><div className="skills-grid">{skills.map(({name,icon:I,items})=><article className="skill-card reveal" key={name}><div className="skill-icon"><I/></div><h3>{name}</h3><div>{items.map(t=><span key={t}>{t}</span>)}</div></article>)}</div></div>
       </section>
 
-      <section className="section container education">
-        <div className="section-head reveal"><div><span className="section-tag">Education</span><h2>Academic foundation</h2></div></div>
-        <div className="edu-grid">
-          <article className="reveal"><GraduationCap/><span>Running</span><h3>B.Sc. in Electrical & Electronic Engineering</h3><p>Manarat International University</p></article>
-          <article className="reveal"><GraduationCap/><span>2021 · CGPA 3.35</span><h3>Diploma in Electronics Engineering</h3><p>Rangpur Polytechnic Institute</p></article>
-          <article className="reveal"><GraduationCap/><span>2017 · GPA 4.59</span><h3>Secondary School Certificate, Science</h3><p>Al-Hera Institute</p></article>
-        </div>
+      <section className="section container education-section">
+        <div className="section-index reveal">07 / Education</div><div className="education-main reveal"><div className="section-kicker">Education & development</div><h2>Strong electronics foundation with continuing EEE study.</h2><div className="education-grid"><article><span>Completed</span><h3>Diploma in Electronics Engineering</h3><p>Foundation in electronics, circuits, measurement, digital systems, microcontrollers and practical laboratory work.</p></article><article><span>In progress</span><h3>B.Sc. in Electrical & Electronic Engineering</h3><p>Continuing academic development alongside full-time practical engineering exposure.</p></article><article><span>Continuous</span><h3>Industrial & Self-Directed Learning</h3><p>PLC systems, product development, PCB tools, technical documentation and manufacturing workflows.</p></article></div></div>
       </section>
 
       <section id="contact" className="contact-section">
-        <div className="container contact-grid">
-          <div className="reveal"><span className="section-tag light-tag">Contact</span><h2>Let’s discuss engineering, product development or technical collaboration.</h2><p>Based in Dhaka, Bangladesh. Open to relevant engineering and multinational opportunities.</p></div>
-          <div className="contact-card reveal"><a href="mailto:sabbirahmmedshehab@gmail.com"><Mail/> <span><small>Email</small><b>sabbirahmmedshehab@gmail.com</b></span></a><a href="tel:+8801635166768"><Phone/> <span><small>Phone</small><b>+880 1635-166768</b></span></a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download/> <span><small>Resume</small><b>Download CV</b></span></a></div>
-        </div>
+        <div className="container contact-layout"><div className="reveal"><div className="section-kicker light">Let’s connect</div><h2>Looking for an engineer who can build, document and support real products?</h2><p>I am interested in product development, electronics, automation, technical documentation, manufacturing and engineering-support opportunities.</p><div className="contact-actions"><a className="btn white" href="mailto:sabbir.fabotronix@gmail.com"><Mail/> Send Email</a><a className="btn outline" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download/> Download CV</a></div></div><div className="contact-card reveal"><a href="mailto:sabbir.fabotronix@gmail.com"><Mail/><span><small>Email</small><b>sabbir.fabotronix@gmail.com</b></span></a><a href="tel:+880"><Phone/><span><small>Phone</small><b>Available in CV</b></span></a><div><MapPin/><span><small>Location</small><b>Dhaka, Bangladesh</b></span></div><div><Award/><span><small>Target roles</small><b>Electronics · Automation · Product Engineering</b></span></div></div></div>
       </section>
     </main>
 
-    <footer><div className="container"><span>© 2026 Sabbir Ahmmed Shehab</span><span>Assistant Engineer · Product Development · Industrial Automation</span></div></footer>
-  </>
+    <footer><div className="container"><span>© 2026 Sabbir Ahmmed Shehab</span><span>Assistant Engineer · Engineering Portfolio</span></div></footer>
+
+    {selected&&<div className="modal-backdrop" onClick={()=>setSelected(null)}><article className="modal" onClick={e=>e.stopPropagation()}><button onClick={()=>setSelected(null)} aria-label="Close"><X/></button><div className="section-kicker">{selected.category} · {selected.year}</div><h2>{selected.title}</h2><p>{selected.desc}</p><div className="modal-block"><small>My contribution</small><strong>{selected.role}</strong></div><div className="modal-tech">{selected.tech.map(t=><span key={t}>{t}</span>)}</div><a href="#contact" className="btn primary" onClick={()=>setSelected(null)}>Discuss this work <ArrowRight/></a></article></div>}
+  </>;
 }
 
 createRoot(document.getElementById('root')).render(<App/>);
