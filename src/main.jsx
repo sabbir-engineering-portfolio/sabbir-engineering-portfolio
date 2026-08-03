@@ -65,10 +65,18 @@ function App(){
   const [filter,setFilter]=useState('All');
   const [selected,setSelected]=useState(null);
   const [activeSection,setActiveSection]=useState('home');
+  const [scrollProgress,setScrollProgress]=useState(0);
   const categories=['All',...new Set(products.map(p=>p.category))];
   const visible=useMemo(()=>filter==='All'?products:products.filter(p=>p.category===filter),[filter]);
 
   useEffect(()=>{
+    const onScroll=()=>{
+      const max=document.documentElement.scrollHeight-window.innerHeight;
+      setScrollProgress(max>0?(window.scrollY/max)*100:0);
+    };
+    onScroll();
+    window.addEventListener('scroll',onScroll,{passive:true});
+
     const revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.isIntersecting&&e.target.classList.add('visible')),{threshold:.12});
     document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
 
@@ -78,11 +86,12 @@ function App(){
     },{rootMargin:'-35% 0px -55% 0px',threshold:[0,.2,.5]});
     document.querySelectorAll('main section[id], main[id]').forEach(el=>sectionObserver.observe(el));
 
-    return()=>{ revealObserver.disconnect(); sectionObserver.disconnect(); };
+    return()=>{ revealObserver.disconnect(); sectionObserver.disconnect(); window.removeEventListener('scroll',onScroll); };
   },[]);
 
   const nav=['About','Experience','Work','Manuals','Training','Skills','Contact'];
   return <>
+    <div className="scroll-progress" style={{transform:`scaleX(${scrollProgress/100})`}} aria-hidden="true"/>
     <header className="nav-wrap">
       <nav className="nav container">
         <a href="#home" className="brand"><span>SS</span><div><b>Sabbir Shehab</b><small>Assistant Engineer</small></div></a>
@@ -96,6 +105,8 @@ function App(){
     <main id="home">
       <section className="hero">
         <div className="hero-mesh" aria-hidden="true"/><div className="signal-line" aria-hidden="true"/>
+        <div className="circuit-field" aria-hidden="true">{[1,2,3,4,5,6,7,8].map(i=><span key={i} className={'circuit-node node-'+i}/>)}</div>
+        <div className="hero-rings" aria-hidden="true"><i/><i/><i/></div>
         <div className="container hero-grid">
           <div className="hero-copy reveal visible">
             <div className="eyebrow"><span/> Assistant Engineer · Product Development</div>
@@ -107,7 +118,7 @@ function App(){
             </div>
             <div className="micro-proof"><span><CheckCircle2/> Product Development</span><span><CheckCircle2/> PLC & Embedded</span><span><CheckCircle2/> Technical Manuals</span></div>
           </div>
-          <div className="portrait-stage reveal visible">
+          <div className="portrait-stage reveal visible float-stage">
             <div className="portrait-glow"/><div className="portrait-frame"><img src="/assets/profile.png" alt="Sabbir Ahmmed Shehab"/></div>
             <div className="floating-chip chip-one"><CircuitBoard/><span><b>Build</b> Practical trainer systems</span></div>
             <div className="floating-chip chip-two"><FileText/><span><b>Document</b> Experiment-oriented manuals</span></div>
@@ -137,7 +148,7 @@ function App(){
       <section id="experience" className="section muted-section">
         <div className="container">
           <div className="section-head reveal"><div><div className="section-kicker">Career journey</div><h2>Experience shaped by hands-on responsibility.</h2></div><p>My career progression reflects increasing ownership across product development, service, documentation and technical training.</p></div>
-          <div className="career-timeline">
+          <div className="career-timeline animated-line">
             <article className="timeline-item reveal"><div className="timeline-marker"><Factory/></div><div className="timeline-meta"><span>2022—Present</span><small>Current</small></div><div className="timeline-body featured"><div className="role-line"><div><h3>Assistant Engineer</h3><h4>Fabotronix Limited · Dhaka</h4></div><span className="status-badge">Product Engineering</span></div><p>Supporting engineering trainer and automation product development across design review, manufacturing, validation, technical documentation and user training.</p><div className="timeline-columns"><ul><li>Develop and continuously improve educational engineering trainers.</li><li>Support PLC, embedded, PCB and panel-based systems.</li><li>Create experiment manuals, wiring guidance and QR-linked documentation.</li></ul><ul><li>Conduct product training for teachers and institutional users.</li><li>Support component sourcing and technical evaluation.</li><li>Assist production when workload requires full trainer assembly and testing.</li></ul></div></div></article>
             <article className="timeline-item reveal"><div className="timeline-marker"><Wrench/></div><div className="timeline-meta"><span>2023</span><small>6 months</small></div><div className="timeline-body"><div className="role-line"><div><h3>Service Engineer</h3><h4>Gazi International</h4></div><span className="status-badge muted">Field Service</span></div><p>Diagnosed and serviced peripheral, centrifugal, submersible and drainage pumps, motors and selected home appliances—strengthening systematic fault-finding and customer-facing technical support.</p><div className="career-tags"><span>Diagnostics</span><span>Pumps & motors</span><span>Service support</span></div></div></article>
             <article className="timeline-item reveal"><div className="timeline-marker"><GraduationCap/></div><div className="timeline-meta"><span>Ongoing</span><small>Academic</small></div><div className="timeline-body"><div className="role-line"><div><h3>B.Sc. in Electrical & Electronic Engineering</h3><h4>Manarat International University</h4></div><span className="status-badge muted">In progress</span></div><p>Continuing undergraduate study while applying a completed Diploma in Electronics Engineering in real product, manufacturing and automation environments.</p></div></article>
@@ -165,7 +176,7 @@ function App(){
       </section>
 
       <section className="section dark-section">
-        <div className="container"><div className="section-head reveal"><div><div className="section-kicker light">Product lifecycle</div><h2>From requirement to reliable use.</h2></div><p>My value comes from understanding the complete chain—not only one isolated engineering stage.</p></div><div className="lifecycle-grid">{lifecycle.map(([n,t,I,d])=><div className="life-card reveal" key={t}><span>{n}</span><I/><h3>{t}</h3><p>{d}</p></div>)}</div></div>
+        <div className="container"><div className="section-head reveal"><div><div className="section-kicker light">Product lifecycle</div><h2>From requirement to reliable use.</h2></div><p>My value comes from understanding the complete chain—not only one isolated engineering stage.</p></div><div className="lifecycle-grid flow-grid">{lifecycle.map(([n,t,I,d])=><div className="life-card reveal" key={t}><span>{n}</span><I/><h3>{t}</h3><p>{d}</p></div>)}</div></div>
       </section>
 
       <section id="training" className="section container">
