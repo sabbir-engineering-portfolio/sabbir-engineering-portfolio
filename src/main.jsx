@@ -111,11 +111,11 @@ function App(){
     <header className="nav-wrap">
       <nav className="nav container">
         <a href="#home" className="brand"><span>SS</span><div><b>Sabbir Shehab</b><small>Assistant Engineer</small></div></a>
-        <div className="desktop-nav">{nav.map(n=><a key={n} className={activeSection===n.toLowerCase()?'active':''} href={'#'+n.toLowerCase()}>{n}</a>)}<a href="/journal.html" className="journal-nav"><Newspaper size={14}/> Journal</a></div>
+        <div className="desktop-nav">{nav.map(n=><a key={n} className={activeSection===n.toLowerCase()?'active':''} href={'#'+n.toLowerCase()}>{n}</a>)}<a href="./journal.html" className="journal-nav"><Newspaper size={14}/> Journal</a></div>
         <a className="nav-cta desktop-nav" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={16}/> Download CV</a>
         <button className="menu-btn" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X/>:<Menu/>}</button>
       </nav>
-      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="/journal.html" onClick={()=>setMenu(false)}>Journal</a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
+      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="./journal.html" onClick={()=>setMenu(false)}>Journal</a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
     </header>
 
     <main id="home">
