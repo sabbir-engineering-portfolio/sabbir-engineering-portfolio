@@ -200,6 +200,14 @@ function App(){
       <section id="training" data-view="training" className="section container">
         <div className="section-head reveal"><div><div className="section-kicker">Knowledge transfer</div><h2>Technical training across Bangladesh.</h2></div><p>Product knowledge transferred through trainer operation, software, wiring, troubleshooting and experiment demonstrations.</p></div>
         <div className="training-layout"><div className="map-panel reveal"><div className="map-orbit"><div className="map-center">BD<span>Training footprint</span></div>{[1,2,3,4,5,6].map(i=><i key={i} className={'dot dot-'+i}/>)}</div><div className="map-caption"><MapPin/><span>Polytechnic and institutional training across multiple districts</span></div></div><div className="training-list">{training.map(([a,b],i)=><article className="training-card reveal" key={a}><span>{String(i+1).padStart(2,'0')}</span><div><h3>{a}</h3><p>{b}</p></div><ChevronRight/></article>)}</div></div>
+        <div className="training-gallery reveal">
+          <div className="training-gallery-head"><div><span className="section-kicker">Training in action</span><h3>Hands-on knowledge transfer.</h3></div><p>Real sessions combining explanation, wiring, demonstration and practical interaction with engineering trainer systems.</p></div>
+          <div className="training-photo-grid">
+            <figure className="training-photo wide"><img src="/assets/training-hands-on.jpg" alt="Hands-on engineering trainer demonstration with students"/><figcaption><strong>Hands-on trainer demonstration</strong><span>Practical wiring, component handling and direct system interaction.</span></figcaption></figure>
+            <figure className="training-photo"><img src="/assets/training-classroom.jpg" alt="Technical classroom training session"/><figcaption><strong>Classroom technical session</strong><span>Concept explanation followed by practical trainer-based learning.</span></figcaption></figure>
+            <figure className="training-photo"><img src="/assets/training-institutional.jpg" alt="Institutional electrical trainer demonstration"/><figcaption><strong>Institutional trainer demonstration</strong><span>Electrical training equipment operation, connection and practical guidance.</span></figcaption></figure>
+          </div>
+        </div>
       </section>
 
       <section id="skills" data-view="skills" className="section muted-section">
