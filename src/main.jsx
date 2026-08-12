@@ -7,7 +7,6 @@ import {
   Search, Settings2, ShieldCheck, Sparkles, Wrench, X, Zap
 } from 'lucide-react';
 import './styles.css';
-import JournalPage from './components/JournalPage';
 
 const products = [
   { year:'2022', category:'Electrical', title:'DC Circuit & Network Trainer', desc:'A structured practical platform for DC laws, component behaviour and network-analysis experiments.', role:'Product development · testing · documentation', tech:['Circuit design','Measurement','Lab training'] },
@@ -65,7 +64,11 @@ function App(){
   const [menu,setMenu]=useState(false);
   const [filter,setFilter]=useState('All');
   const [selected,setSelected]=useState(null);
-  const [activeSection,setActiveSection]=useState('home');
+  const views=['home','about','experience','work','manuals','training','skills','contact'];
+  const [activeSection,setActiveSection]=useState(()=>{
+    const h=window.location.hash.replace('#','').toLowerCase();
+    return views.includes(h)?h:'home';
+  });
   const [scrollProgress,setScrollProgress]=useState(0);
   const categories=['All',...new Set(products.map(p=>p.category))];
   const visible=useMemo(()=>filter==='All'?products:products.filter(p=>p.category===filter),[filter]);
@@ -81,123 +84,44 @@ function App(){
     const revealObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.isIntersecting&&e.target.classList.add('visible')),{threshold:.12});
     document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
 
-    const sectionObserver=new IntersectionObserver(entries=>{
-      const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
-      if(visible) setActiveSection(visible.target.id || 'home');
-    },{rootMargin:'-35% 0px -55% 0px',threshold:[0,.2,.5]});
-    document.querySelectorAll('main section[id], main[id]').forEach(el=>sectionObserver.observe(el));
+    const onHashChange=()=>{
+      const h=window.location.hash.replace('#','').toLowerCase();
+      if(views.includes(h)) setActiveSection(h);
+    };
+    window.addEventListener('hashchange',onHashChange);
 
-    return()=>{ revealObserver.disconnect(); sectionObserver.disconnect(); window.removeEventListener('scroll',onScroll); };
+    return()=>{ revealObserver.disconnect(); window.removeEventListener('scroll',onScroll); window.removeEventListener('hashchange',onHashChange); };
   },[]);
 
   useEffect(()=>{
-    const finePointer=window.matchMedia('(pointer:fine)').matches;
-    const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!finePointer || reducedMotion) return;
-
-    const glow=document.createElement('div');
-    glow.className='cursor-glow';
-    glow.setAttribute('aria-hidden','true');
-    const dot=document.createElement('div');
-    dot.className='cursor-dot';
-    dot.setAttribute('aria-hidden','true');
-    const spotlight=document.createElement('div');
-    spotlight.className='cursor-spotlight';
-    spotlight.setAttribute('aria-hidden','true');
-    document.body.append(glow,dot,spotlight);
-
-    let targetX=window.innerWidth/2,targetY=window.innerHeight/2;
-    let glowX=targetX,glowY=targetY;
-    let raf=0;
-    const animate=()=>{
-      glowX+=(targetX-glowX)*0.16;
-      glowY+=(targetY-glowY)*0.16;
-      glow.style.transform=`translate3d(${glowX}px,${glowY}px,0) translate(-50%,-50%)`;
-      spotlight.style.transform=`translate3d(${glowX}px,${glowY}px,0) translate(-50%,-50%)`;
-      raf=requestAnimationFrame(animate);
-    };
-    raf=requestAnimationFrame(animate);
-
-    const onMove=(e)=>{
-      targetX=e.clientX; targetY=e.clientY;
-      dot.style.transform=`translate3d(${e.clientX}px,${e.clientY}px,0) translate(-50%,-50%)`;
-      document.documentElement.style.setProperty('--pointer-x',`${e.clientX}px`);
-      document.documentElement.style.setProperty('--pointer-y',`${e.clientY}px`);
-    };
-    const onLeave=()=>document.body.classList.add('pointer-away');
-    const onEnter=()=>document.body.classList.remove('pointer-away');
-    window.addEventListener('pointermove',onMove,{passive:true});
-    document.documentElement.addEventListener('mouseleave',onLeave);
-    document.documentElement.addEventListener('mouseenter',onEnter);
-
-    const magnetic=[...document.querySelectorAll('.btn,.nav-cta,.filters button,.menu-btn')];
-    const magneticCleanups=magnetic.map(el=>{
-      const move=(e)=>{
-        const r=el.getBoundingClientRect();
-        const x=e.clientX-r.left-r.width/2;
-        const y=e.clientY-r.top-r.height/2;
-        el.style.setProperty('--mag-x',`${x*0.10}px`);
-        el.style.setProperty('--mag-y',`${y*0.10}px`);
-        el.classList.add('is-magnetic');
-      };
-      const leave=()=>{el.style.setProperty('--mag-x','0px');el.style.setProperty('--mag-y','0px');el.classList.remove('is-magnetic');};
-      el.addEventListener('pointermove',move); el.addEventListener('pointerleave',leave);
-      return()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerleave',leave);};
+    window.scrollTo({top:0,behavior:'smooth'});
+    requestAnimationFrame(()=>{
+      document.querySelectorAll('main > section[data-view=\"'+activeSection+'\"] .reveal, main > section[data-view=\"'+activeSection+'\"].reveal').forEach(el=>el.classList.add('visible'));
     });
+  },[activeSection]);
 
-    const tiltCards=[...document.querySelectorAll('.product-card,.case-card,.skill-card,.timeline-body')];
-    const tiltCleanups=tiltCards.map(card=>{
-      const move=(e)=>{
-        const r=card.getBoundingClientRect();
-        const px=(e.clientX-r.left)/r.width;
-        const py=(e.clientY-r.top)/r.height;
-        const ry=(px-.5)*5;
-        const rx=(.5-py)*4;
-        card.style.setProperty('--tilt-x',`${rx}deg`);
-        card.style.setProperty('--tilt-y',`${ry}deg`);
-        card.style.setProperty('--shine-x',`${px*100}%`);
-        card.style.setProperty('--shine-y',`${py*100}%`);
-        card.classList.add('cursor-reactive');
-      };
-      const leave=()=>{card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg');card.classList.remove('cursor-reactive');};
-      card.addEventListener('pointermove',move); card.addEventListener('pointerleave',leave);
-      return()=>{card.removeEventListener('pointermove',move);card.removeEventListener('pointerleave',leave);};
-    });
-
-    const interactiveSelector='a,button,.product-card,.case-card,.skill-card,.timeline-body';
-    const over=(e)=>{if(e.target.closest(interactiveSelector)) document.body.classList.add('pointer-active');};
-    const out=(e)=>{if(e.target.closest(interactiveSelector) && !e.relatedTarget?.closest?.(interactiveSelector)) document.body.classList.remove('pointer-active');};
-    document.addEventListener('pointerover',over);
-    document.addEventListener('pointerout',out);
-
-    return()=>{
-      cancelAnimationFrame(raf);
-      window.removeEventListener('pointermove',onMove);
-      document.documentElement.removeEventListener('mouseleave',onLeave);
-      document.documentElement.removeEventListener('mouseenter',onEnter);
-      document.removeEventListener('pointerover',over);
-      document.removeEventListener('pointerout',out);
-      magneticCleanups.forEach(fn=>fn()); tiltCleanups.forEach(fn=>fn());
-      glow.remove(); dot.remove(); spotlight.remove();
-      document.body.classList.remove('pointer-active','pointer-away');
-    };
-  },[filter,selected,menu]);
+  const goTo=(view)=>{
+    setActiveSection(view);
+    setMenu(false);
+    if(window.location.hash !== '#'+view) window.location.hash=view;
+    else window.scrollTo({top:0,behavior:'smooth'});
+  };
 
   const nav=['About','Experience','Work','Manuals','Training','Skills','Contact'];
   return <>
     <div className="scroll-progress" style={{transform:`scaleX(${scrollProgress/100})`}} aria-hidden="true"/>
     <header className="nav-wrap">
       <nav className="nav container">
-        <a href="#home" className="brand"><span>SS</span><div><b>Sabbir Shehab</b><small>Assistant Engineer</small></div></a>
-        <div className="desktop-nav">{nav.map(n=><a key={n} className={activeSection===n.toLowerCase()?'active':''} href={'#'+n.toLowerCase()}>{n}</a>)}<a href="#journal" className="journal-nav-link">Journal</a></div>
+        <button type="button" className="brand brand-button" onClick={()=>goTo('home')}><span>SS</span><div><b>Sabbir Shehab</b><small>Assistant Engineer</small></div></button>
+        <div className="desktop-nav">{nav.map(n=><button type="button" key={n} className={activeSection===n.toLowerCase()?'active':''} onClick={()=>goTo(n.toLowerCase())}>{n}</button>)}</div>
         <a className="nav-cta desktop-nav" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={16}/> Download CV</a>
         <button className="menu-btn" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X/>:<Menu/>}</button>
       </nav>
-      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="#journal" onClick={()=>setMenu(false)}>Journal</a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
+      {menu&&<div className="mobile-menu">{nav.map(n=><button type="button" key={n} onClick={()=>goTo(n.toLowerCase())}>{n}</button>)}<a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
     </header>
 
-    <main id="home">
-      <section className="hero">
+    <main className="section-router" data-active-view={activeSection}>
+      <section className="hero" data-view="home">
         <div className="hero-mesh" aria-hidden="true"/><div className="signal-line" aria-hidden="true"/>
         <div className="circuit-field" aria-hidden="true">{[1,2,3,4,5,6,7,8].map(i=><span key={i} className={'circuit-node node-'+i}/>)}</div>
         <div className="hero-rings" aria-hidden="true"><i/><i/><i/></div>
@@ -207,7 +131,7 @@ function App(){
             <h1>I turn engineering concepts into <em>working products, manuals and practical training.</em></h1>
             <p>Electronics, embedded systems, PLC automation and educational trainer development—supported from design and manufacturing through documentation and knowledge transfer.</p>
             <div className="hero-actions">
-              <a className="btn primary" href="#work">View Selected Work <ArrowRight size={18}/></a>
+              <button type="button" className="btn primary" onClick={()=>goTo('work')}>View Selected Work <ArrowRight size={18}/></button>
               <a className="btn secondary" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={18}/> Download CV</a>
             </div>
             <div className="micro-proof"><span><CheckCircle2/> Product Development</span><span><CheckCircle2/> PLC & Embedded</span><span><CheckCircle2/> Technical Manuals</span></div>
@@ -221,7 +145,7 @@ function App(){
         </div>
       </section>
 
-      <section className="metric-band">
+      <section className="metric-band" data-view="home">
         <div className="container metric-grid">
           <div><strong>2022–2026</strong><span>Product-development experience</span></div>
           <div><strong>12+</strong><span>Trainer-system categories</span></div>
@@ -230,7 +154,7 @@ function App(){
         </div>
       </section>
 
-      <section id="about" className="section container about-layout">
+      <section id="about" data-view="about" className="section container about-layout">
         <div className="section-index reveal">01 / Profile</div>
         <div className="reveal"><div className="section-kicker">Engineering profile</div><h2>Practical engineering ownership—not just task execution.</h2></div>
         <div className="about-story reveal"><p className="lead">I work where product development, manufacturing and technical education meet.</p><p>Since 2022, I have supported the development of educational and industrial trainer systems across electronics, electrical engineering, embedded systems, automation, networking and robotics. My contribution extends beyond hardware: I create experiment-oriented manuals, wiring guidance and QR-linked resources, then help users operate and troubleshoot the final systems.</p><p>This gives me an end-to-end perspective—understanding not only how a circuit or controller works, but how a complete product must be designed, assembled, validated, documented and delivered for reliable use.</p></div>
@@ -239,7 +163,7 @@ function App(){
         </div>
       </section>
 
-      <section id="experience" className="section muted-section">
+      <section id="experience" data-view="experience" className="section muted-section">
         <div className="container">
           <div className="section-head reveal"><div><div className="section-kicker">Career journey</div><h2>Experience shaped by hands-on responsibility.</h2></div><p>My career progression reflects increasing ownership across product development, service, documentation and technical training.</p></div>
           <div className="career-timeline animated-line">
@@ -250,7 +174,7 @@ function App(){
         </div>
       </section>
 
-      <section id="work" className="section container">
+      <section id="work" data-view="work" className="section container">
         <div className="section-head reveal"><div><div className="section-kicker">Selected work</div><h2>Engineering case studies.</h2></div><p>Examples of the systems and workflows that best represent how I approach engineering work.</p></div>
         <div className="case-grid">
           {caseStudies.map((c,i)=><article className="case-card reveal" key={c.no}><div className={'case-visual visual-'+(i+1)}><span>{c.no}</span><CircuitBoard/></div><div className="case-content"><div className="case-top"><small>{c.type}</small></div><h3>{c.title}</h3><p>{c.text}</p><div className="impact"><Sparkles/><span>{c.impact}</span></div><div className="case-tags">{c.tags.map(t=><span key={t}>{t}</span>)}</div></div></article>)}
@@ -262,46 +186,39 @@ function App(){
         </div>
       </section>
 
-      <section id="manuals" className="section manuals-section">
+      <section id="manuals" data-view="manuals" className="section manuals-section">
         <div className="container manuals-layout">
           <div className="manual-copy reveal"><div className="section-kicker">Technical documentation</div><h2>Documentation engineered for actual use.</h2><p className="lead">A trainer is only complete when users can understand, connect, experiment and troubleshoot it correctly.</p><p>I develop user manuals and experiment guides covering safety, system overview, panel connection, circuit diagrams, operating procedures, observations and troubleshooting. I also implemented QR-based access to digital documentation on physical trainer systems.</p><div className="manual-points">{[['Experiment-oriented structure',BookOpen],['Wiring and circuit guidance',CircuitBoard],['QR-linked digital access',Network],['Troubleshooting support',Wrench]].map(([t,I])=><div key={t}><I/><span>{t}</span></div>)}</div></div>
           <div className="manual-collage reveal"><img className="manual-main" src="/assets/manuals-folder.png" alt="Technical manual library"/><img className="manual-small one" src="/assets/10438.jpg" alt="Manual records"/><img className="manual-small two" src="/assets/10444.jpg" alt="Documentation records"/><div className="doc-stat"><strong>Structured library</strong><span>Manuals organised by trainer and technology</span></div></div>
         </div>
       </section>
 
-      <section className="section dark-section">
+      <section data-view="work" className="section dark-section">
         <div className="container"><div className="section-head reveal"><div><div className="section-kicker light">Product lifecycle</div><h2>From requirement to reliable use.</h2></div><p>My value comes from understanding the complete chain—not only one isolated engineering stage.</p></div><div className="lifecycle-grid flow-grid">{lifecycle.map(([n,t,I,d])=><div className="life-card reveal" key={t}><span>{n}</span><I/><h3>{t}</h3><p>{d}</p></div>)}</div></div>
       </section>
 
-      <section id="training" className="section container">
+      <section id="training" data-view="training" className="section container">
         <div className="section-head reveal"><div><div className="section-kicker">Knowledge transfer</div><h2>Technical training across Bangladesh.</h2></div><p>Product knowledge transferred through trainer operation, software, wiring, troubleshooting and experiment demonstrations.</p></div>
         <div className="training-layout"><div className="map-panel reveal"><div className="map-orbit"><div className="map-center">BD<span>Training footprint</span></div>{[1,2,3,4,5,6].map(i=><i key={i} className={'dot dot-'+i}/>)}</div><div className="map-caption"><MapPin/><span>Polytechnic and institutional training across multiple districts</span></div></div><div className="training-list">{training.map(([a,b],i)=><article className="training-card reveal" key={a}><span>{String(i+1).padStart(2,'0')}</span><div><h3>{a}</h3><p>{b}</p></div><ChevronRight/></article>)}</div></div>
       </section>
 
-      <section id="skills" className="section muted-section">
+      <section id="skills" data-view="skills" className="section muted-section">
         <div className="container"><div className="section-head reveal"><div><div className="section-kicker">Technical capability</div><h2>Tools supported by practical application.</h2></div><p>Skills are grouped by the engineering outcomes they help deliver.</p></div><div className="skills-grid">{skills.map(({name,icon:I,items})=><article className="skill-card reveal" key={name}><div className="skill-icon"><I/></div><h3>{name}</h3><div>{items.map(t=><span key={t}>{t}</span>)}</div></article>)}</div></div>
       </section>
 
-      <section className="section container education-section">
+      <section data-view="about" className="section container education-section">
         <div className="section-index reveal">07 / Education</div><div className="education-main reveal"><div className="section-kicker">Education & development</div><h2>Strong electronics foundation with continuing EEE study.</h2><div className="education-grid"><article><span>Completed</span><h3>Diploma in Electronics Engineering</h3><p>Foundation in electronics, circuits, measurement, digital systems, microcontrollers and practical laboratory work.</p></article><article><span>In progress</span><h3>B.Sc. in Electrical & Electronic Engineering</h3><p>Continuing academic development alongside full-time practical engineering exposure.</p></article><article><span>Continuous</span><h3>Industrial & Self-Directed Learning</h3><p>PLC systems, product development, PCB tools, technical documentation and manufacturing workflows.</p></article></div></div>
       </section>
 
-      <section id="contact" className="contact-section">
+      <section id="contact" data-view="contact" className="contact-section">
         <div className="container contact-layout"><div className="reveal"><div className="section-kicker light">Let’s connect</div><h2>Looking for an engineer who can build, document and support real products?</h2><p>I am interested in product development, electronics, automation, technical documentation, manufacturing and engineering-support opportunities.</p><div className="contact-actions"><a className="btn white" href="mailto:sabbirahmmedshehab@gmail.com"><Mail/> Send Email</a><a className="btn outline" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download/> Download CV</a></div></div><div className="contact-card reveal"><a href="mailto:sabbirahmmedshehab@gmail.com"><Mail/><span><small>Email</small><b>sabbirahmmedshehab@gmail.com</b></span></a><a href="tel:+8801635166768"><Phone/><span><small>Phone</small><b>+880 1635-166768</b></span></a><div><MapPin/><span><small>Location</small><b>Dhaka, Bangladesh</b></span></div><div><Award/><span><small>Target roles</small><b>Electronics · Automation · Product Engineering</b></span></div></div></div>
       </section>
     </main>
 
     <footer><div className="container"><span>© 2026 Sabbir Ahmmed Shehab</span><span>Assistant Engineer · Engineering Portfolio</span></div></footer>
 
-    {selected&&<div className="modal-backdrop" onClick={()=>setSelected(null)}><article className="modal" onClick={e=>e.stopPropagation()}><button onClick={()=>setSelected(null)} aria-label="Close"><X/></button><div className="section-kicker">{selected.category} · {selected.year}</div><h2>{selected.title}</h2><p>{selected.desc}</p><div className="modal-block"><small>My contribution</small><strong>{selected.role}</strong></div><div className="modal-tech">{selected.tech.map(t=><span key={t}>{t}</span>)}</div><a href="#contact" className="btn primary" onClick={()=>setSelected(null)}>Discuss this work <ArrowRight/></a></article></div>}
+    {selected&&<div className="modal-backdrop" onClick={()=>setSelected(null)}><article className="modal" onClick={e=>e.stopPropagation()}><button onClick={()=>setSelected(null)} aria-label="Close"><X/></button><div className="section-kicker">{selected.category} · {selected.year}</div><h2>{selected.title}</h2><p>{selected.desc}</p><div className="modal-block"><small>My contribution</small><strong>{selected.role}</strong></div><div className="modal-tech">{selected.tech.map(t=><span key={t}>{t}</span>)}</div><button type="button" className="btn primary" onClick={()=>{setSelected(null);goTo('contact')}}>Discuss this work <ArrowRight/></button></article></div>}
   </>;
 }
 
-function RootApp(){
-  const [route,setRoute]=useState(window.location.hash);
-  useEffect(()=>{ const sync=()=>setRoute(window.location.hash); window.addEventListener('hashchange',sync); return()=>window.removeEventListener('hashchange',sync); },[]);
-  if(route.startsWith('#journal')) return <JournalPage onBack={()=>{ window.location.hash='#work'; setTimeout(()=>document.getElementById('work')?.scrollIntoView({behavior:'smooth'}),50); }}/>;
-  return <App/>;
-}
-
-createRoot(document.getElementById('root')).render(<RootApp/>);
+createRoot(document.getElementById('root')).render(<App/>);
