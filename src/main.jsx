@@ -4,9 +4,10 @@ import {
   ArrowRight, Award, BookOpen, BriefcaseBusiness, CheckCircle2, ChevronRight,
   CircuitBoard, ClipboardCheck, Cpu, Download, ExternalLink, Factory,
   FileText, GraduationCap, Layers3, Mail, MapPin, Menu, Network, Phone,
-  Search, Settings2, ShieldCheck, Sparkles, Wrench, X, Zap, Newspaper
+  Search, Settings2, ShieldCheck, Sparkles, Wrench, X, Zap
 } from 'lucide-react';
 import './styles.css';
+import JournalPage from './components/JournalPage';
 
 const products = [
   { year:'2022', category:'Electrical', title:'DC Circuit & Network Trainer', desc:'A structured practical platform for DC laws, component behaviour and network-analysis experiments.', role:'Product development · testing · documentation', tech:['Circuit design','Measurement','Lab training'] },
@@ -60,21 +61,6 @@ const lifecycle = [
   ['07','Train',GraduationCap,'Transfer product knowledge to teachers and users.']
 ];
 
-function MouseAura(){
-  useEffect(()=>{
-    const fine=window.matchMedia('(pointer:fine)').matches;
-    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!fine||reduced) return;
-    const root=document.documentElement;
-    let tx=window.innerWidth/2, ty=window.innerHeight/2, x=tx, y=ty, raf;
-    const move=e=>{tx=e.clientX;ty=e.clientY;root.style.setProperty('--mouse-x',`${tx}px`);root.style.setProperty('--mouse-y',`${ty}px`)};
-    const tick=()=>{x+=(tx-x)*.14;y+=(ty-y)*.14;root.style.setProperty('--cursor-x',`${x}px`);root.style.setProperty('--cursor-y',`${y}px`);raf=requestAnimationFrame(tick)};
-    window.addEventListener('pointermove',move,{passive:true});tick();
-    return()=>{window.removeEventListener('pointermove',move);cancelAnimationFrame(raf)};
-  },[]);
-  return <><div className="cursor-aura" aria-hidden="true"/><div className="cursor-dot" aria-hidden="true"/></>;
-}
-
 function App(){
   const [menu,setMenu]=useState(false);
   const [filter,setFilter]=useState('All');
@@ -104,18 +90,110 @@ function App(){
     return()=>{ revealObserver.disconnect(); sectionObserver.disconnect(); window.removeEventListener('scroll',onScroll); };
   },[]);
 
+  useEffect(()=>{
+    const finePointer=window.matchMedia('(pointer:fine)').matches;
+    const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!finePointer || reducedMotion) return;
+
+    const glow=document.createElement('div');
+    glow.className='cursor-glow';
+    glow.setAttribute('aria-hidden','true');
+    const dot=document.createElement('div');
+    dot.className='cursor-dot';
+    dot.setAttribute('aria-hidden','true');
+    const spotlight=document.createElement('div');
+    spotlight.className='cursor-spotlight';
+    spotlight.setAttribute('aria-hidden','true');
+    document.body.append(glow,dot,spotlight);
+
+    let targetX=window.innerWidth/2,targetY=window.innerHeight/2;
+    let glowX=targetX,glowY=targetY;
+    let raf=0;
+    const animate=()=>{
+      glowX+=(targetX-glowX)*0.16;
+      glowY+=(targetY-glowY)*0.16;
+      glow.style.transform=`translate3d(${glowX}px,${glowY}px,0) translate(-50%,-50%)`;
+      spotlight.style.transform=`translate3d(${glowX}px,${glowY}px,0) translate(-50%,-50%)`;
+      raf=requestAnimationFrame(animate);
+    };
+    raf=requestAnimationFrame(animate);
+
+    const onMove=(e)=>{
+      targetX=e.clientX; targetY=e.clientY;
+      dot.style.transform=`translate3d(${e.clientX}px,${e.clientY}px,0) translate(-50%,-50%)`;
+      document.documentElement.style.setProperty('--pointer-x',`${e.clientX}px`);
+      document.documentElement.style.setProperty('--pointer-y',`${e.clientY}px`);
+    };
+    const onLeave=()=>document.body.classList.add('pointer-away');
+    const onEnter=()=>document.body.classList.remove('pointer-away');
+    window.addEventListener('pointermove',onMove,{passive:true});
+    document.documentElement.addEventListener('mouseleave',onLeave);
+    document.documentElement.addEventListener('mouseenter',onEnter);
+
+    const magnetic=[...document.querySelectorAll('.btn,.nav-cta,.filters button,.menu-btn')];
+    const magneticCleanups=magnetic.map(el=>{
+      const move=(e)=>{
+        const r=el.getBoundingClientRect();
+        const x=e.clientX-r.left-r.width/2;
+        const y=e.clientY-r.top-r.height/2;
+        el.style.setProperty('--mag-x',`${x*0.10}px`);
+        el.style.setProperty('--mag-y',`${y*0.10}px`);
+        el.classList.add('is-magnetic');
+      };
+      const leave=()=>{el.style.setProperty('--mag-x','0px');el.style.setProperty('--mag-y','0px');el.classList.remove('is-magnetic');};
+      el.addEventListener('pointermove',move); el.addEventListener('pointerleave',leave);
+      return()=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerleave',leave);};
+    });
+
+    const tiltCards=[...document.querySelectorAll('.product-card,.case-card,.skill-card,.timeline-body')];
+    const tiltCleanups=tiltCards.map(card=>{
+      const move=(e)=>{
+        const r=card.getBoundingClientRect();
+        const px=(e.clientX-r.left)/r.width;
+        const py=(e.clientY-r.top)/r.height;
+        const ry=(px-.5)*5;
+        const rx=(.5-py)*4;
+        card.style.setProperty('--tilt-x',`${rx}deg`);
+        card.style.setProperty('--tilt-y',`${ry}deg`);
+        card.style.setProperty('--shine-x',`${px*100}%`);
+        card.style.setProperty('--shine-y',`${py*100}%`);
+        card.classList.add('cursor-reactive');
+      };
+      const leave=()=>{card.style.setProperty('--tilt-x','0deg');card.style.setProperty('--tilt-y','0deg');card.classList.remove('cursor-reactive');};
+      card.addEventListener('pointermove',move); card.addEventListener('pointerleave',leave);
+      return()=>{card.removeEventListener('pointermove',move);card.removeEventListener('pointerleave',leave);};
+    });
+
+    const interactiveSelector='a,button,.product-card,.case-card,.skill-card,.timeline-body';
+    const over=(e)=>{if(e.target.closest(interactiveSelector)) document.body.classList.add('pointer-active');};
+    const out=(e)=>{if(e.target.closest(interactiveSelector) && !e.relatedTarget?.closest?.(interactiveSelector)) document.body.classList.remove('pointer-active');};
+    document.addEventListener('pointerover',over);
+    document.addEventListener('pointerout',out);
+
+    return()=>{
+      cancelAnimationFrame(raf);
+      window.removeEventListener('pointermove',onMove);
+      document.documentElement.removeEventListener('mouseleave',onLeave);
+      document.documentElement.removeEventListener('mouseenter',onEnter);
+      document.removeEventListener('pointerover',over);
+      document.removeEventListener('pointerout',out);
+      magneticCleanups.forEach(fn=>fn()); tiltCleanups.forEach(fn=>fn());
+      glow.remove(); dot.remove(); spotlight.remove();
+      document.body.classList.remove('pointer-active','pointer-away');
+    };
+  },[filter,selected,menu]);
+
   const nav=['About','Experience','Work','Manuals','Training','Skills','Contact'];
   return <>
-    <MouseAura/>
     <div className="scroll-progress" style={{transform:`scaleX(${scrollProgress/100})`}} aria-hidden="true"/>
     <header className="nav-wrap">
       <nav className="nav container">
         <a href="#home" className="brand"><span>SS</span><div><b>Sabbir Shehab</b><small>Assistant Engineer</small></div></a>
-        <div className="desktop-nav">{nav.map(n=><a key={n} className={activeSection===n.toLowerCase()?'active':''} href={'#'+n.toLowerCase()}>{n}</a>)}<a href="./journal.html" className="journal-nav"><Newspaper size={14}/> Journal</a></div>
+        <div className="desktop-nav">{nav.map(n=><a key={n} className={activeSection===n.toLowerCase()?'active':''} href={'#'+n.toLowerCase()}>{n}</a>)}<a href="#journal" className="journal-nav-link">Journal</a></div>
         <a className="nav-cta desktop-nav" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={16}/> Download CV</a>
         <button className="menu-btn" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X/>:<Menu/>}</button>
       </nav>
-      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="./journal.html" onClick={()=>setMenu(false)}>Journal</a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
+      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="#journal" onClick={()=>setMenu(false)}>Journal</a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
     </header>
 
     <main id="home">
@@ -219,4 +297,11 @@ function App(){
   </>;
 }
 
-createRoot(document.getElementById('root')).render(<App/>);
+function RootApp(){
+  const [route,setRoute]=useState(window.location.hash);
+  useEffect(()=>{ const sync=()=>setRoute(window.location.hash); window.addEventListener('hashchange',sync); return()=>window.removeEventListener('hashchange',sync); },[]);
+  if(route.startsWith('#journal')) return <JournalPage onBack={()=>{ window.location.hash='#work'; setTimeout(()=>document.getElementById('work')?.scrollIntoView({behavior:'smooth'}),50); }}/>;
+  return <App/>;
+}
+
+createRoot(document.getElementById('root')).render(<RootApp/>);

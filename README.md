@@ -1,34 +1,26 @@
-# Sabbir Engineering Portfolio
+# Sabbir Ahmmed Shehab — Engineering Portfolio v2.4
 
-Premium responsive portfolio website for Sabbir Ahmmed Shehab.
+Premium React/Vite engineering portfolio with a built-in Project Journal.
 
-## Local development
+## Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Production build
+## Build
 
 ```bash
 npm run build
 ```
 
-The build output will be in `dist/`.
+## Journal
 
-## Cloudflare Pages settings
+The Journal is routed inside the same SPA at `#journal`, avoiding separate-page routing issues on the current Cloudflare Workers setup.
 
-- Framework preset: Vite
-- Build command: `npm run build`
-- Build output directory: `dist`
-- Node version: 20 or later
+It works in demo mode without a backend. For live project uploads, images, comments and moderation, follow `SUPABASE_SETUP.md`.
 
-## Updating content
+## Cloudflare
 
-Most website content is stored in `src/main.jsx`:
-- `products` array for engineering products
-- `training` array for training locations
-- `skills` object for technical capabilities
-
-Images and the CV are stored under `public/`.
+Use the same deployment settings as the working Version 2 project. Add the optional `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` environment variables after creating a Supabase project.
