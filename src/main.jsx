@@ -4,7 +4,7 @@ import {
   ArrowRight, Award, BookOpen, BriefcaseBusiness, CheckCircle2, ChevronRight,
   CircuitBoard, ClipboardCheck, Cpu, Download, ExternalLink, Factory,
   FileText, GraduationCap, Layers3, Mail, MapPin, Menu, Network, Phone,
-  Search, Settings2, ShieldCheck, Sparkles, Wrench, X, Zap
+  Search, Settings2, ShieldCheck, Sparkles, Wrench, X, Zap, Newspaper
 } from 'lucide-react';
 import './styles.css';
 
@@ -60,6 +60,21 @@ const lifecycle = [
   ['07','Train',GraduationCap,'Transfer product knowledge to teachers and users.']
 ];
 
+function MouseAura(){
+  useEffect(()=>{
+    const fine=window.matchMedia('(pointer:fine)').matches;
+    const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(!fine||reduced) return;
+    const root=document.documentElement;
+    let tx=window.innerWidth/2, ty=window.innerHeight/2, x=tx, y=ty, raf;
+    const move=e=>{tx=e.clientX;ty=e.clientY;root.style.setProperty('--mouse-x',`${tx}px`);root.style.setProperty('--mouse-y',`${ty}px`)};
+    const tick=()=>{x+=(tx-x)*.14;y+=(ty-y)*.14;root.style.setProperty('--cursor-x',`${x}px`);root.style.setProperty('--cursor-y',`${y}px`);raf=requestAnimationFrame(tick)};
+    window.addEventListener('pointermove',move,{passive:true});tick();
+    return()=>{window.removeEventListener('pointermove',move);cancelAnimationFrame(raf)};
+  },[]);
+  return <><div className="cursor-aura" aria-hidden="true"/><div className="cursor-dot" aria-hidden="true"/></>;
+}
+
 function App(){
   const [menu,setMenu]=useState(false);
   const [filter,setFilter]=useState('All');
@@ -91,15 +106,16 @@ function App(){
 
   const nav=['About','Experience','Work','Manuals','Training','Skills','Contact'];
   return <>
+    <MouseAura/>
     <div className="scroll-progress" style={{transform:`scaleX(${scrollProgress/100})`}} aria-hidden="true"/>
     <header className="nav-wrap">
       <nav className="nav container">
         <a href="#home" className="brand"><span>SS</span><div><b>Sabbir Shehab</b><small>Assistant Engineer</small></div></a>
-        <div className="desktop-nav">{nav.map(n=><a key={n} className={activeSection===n.toLowerCase()?'active':''} href={'#'+n.toLowerCase()}>{n}</a>)}</div>
+        <div className="desktop-nav">{nav.map(n=><a key={n} className={activeSection===n.toLowerCase()?'active':''} href={'#'+n.toLowerCase()}>{n}</a>)}<a href="/journal.html" className="journal-nav"><Newspaper size={14}/> Journal</a></div>
         <a className="nav-cta desktop-nav" href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download><Download size={16}/> Download CV</a>
         <button className="menu-btn" onClick={()=>setMenu(!menu)} aria-label="Toggle menu">{menu?<X/>:<Menu/>}</button>
       </nav>
-      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
+      {menu&&<div className="mobile-menu">{nav.map(n=><a key={n} href={'#'+n.toLowerCase()} onClick={()=>setMenu(false)}>{n}</a>)}<a href="/journal.html" onClick={()=>setMenu(false)}>Journal</a><a href="/cv/Sabbir_Ahmmed_Shehab_Assistant_Engineer_CV.pdf" download>Download CV</a></div>}
     </header>
 
     <main id="home">
